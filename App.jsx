@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { StyleSheet, Text, View, Image, TextInput, Button, FlatList, Modal } from "react-native";
+import CustomModal from "./components/CustomModal";
 
 export default function App() {
     const [textItem, setTextItem] = useState("");
@@ -16,11 +17,22 @@ export default function App() {
             setTextItem("");
     };
 
+    const onSelectItemHandler = (id) => {
+        setIsModalVisible(!isModalVisible)
+        setItemSelectedToDelete(itemList.find((item) => item.id === id))
+    };
+
+    const onDeleteItemHandler = () => {
+        setItemList(itemList.filter((item) => item.id !== itemSelectedToDelete.id))
+        setItemSelectedToDelete({})
+        setIsModalVisible(!isModalVisible)
+    };
+
     const renderListItem = ({ item }) => {
         return (
             <View style={styles.itemList}>
                 <Text>{item.value}</Text>
-                <Button title="X" />
+                <Button title="X" onPress={() => onSelectItemHandler(item.id)} />
             </View>
         )
     }
@@ -39,16 +51,13 @@ export default function App() {
                     renderItem={renderListItem}
                     keyExtractor={item => item.id} />
             </View>
-            <Modal animationType="slide" visible={isModalVisible}>
-                <View style={styles.modalMessageConteiner}>
-                    <Text>Se eliminara: </Text>
-                    <Text>{itemSelectedToDelete.value}</Text>
-                </View>
-                <View style={styles.modalButtonConteiner}>
-                    <Button title="Cancelar" color="#ccc" />
-                    <Button title="Eliminar" color="#ef233c" />
-                </View>
-            </Modal>
+            <CustomModal
+                animationTypeProp="slide"
+                isVisibleProp={isModalVisible}
+                itemSelectedProp={itemSelectedToDelete}
+                onDeleteItemHandlerEvent={onDeleteItemHandler}
+                setIsModalVisibleEvent={setIsModalVisible}
+            />
         </>
     );
 }
@@ -62,6 +71,7 @@ const styles = StyleSheet.create({
     inputConteiner: {
         flexDirection: "row",
         justifyContent: "space-between",
+        marginTop: 240
     },
     textInput: {
         width: 200,
@@ -77,13 +87,4 @@ const styles = StyleSheet.create({
         backgroundColor: "#a2d2ff",
         borderRadius: 20,
     },
-    modalMessageConteiner: {
-        marginTop: 50,
-        alignItems: "center"
-    },
-    modalButtonConteiner: {
-        flexDirection: "row",
-        justifyContent: "space-evenly",
-        paddingTop: 20
-    }
 });
