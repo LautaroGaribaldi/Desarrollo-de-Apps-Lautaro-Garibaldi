@@ -2,6 +2,9 @@ import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { StyleSheet, Text, View, Image, TextInput, Button, FlatList, Modal } from "react-native";
 import CustomModal from "./components/CustomModal";
+import CustomInput from "./components/CustomInput";
+import CustomFlatList from "./components/CustomFlatList";
+
 
 export default function App() {
     const [textItem, setTextItem] = useState("");
@@ -40,16 +43,16 @@ export default function App() {
     return (
         <>
             <View style={styles.container}>
-                <View style={styles.inputConteiner}>
-                    <TextInput style={styles.textInput}
-                        placeholder="Ingresar tarea"
-                        onChangeText={onChangeTextHandler}
-                        value={textItem} />
-                    <Button title="Add" onPress={addItemToListHandler} />
-                </View>
-                <FlatList data={itemList}
-                    renderItem={renderListItem}
-                    keyExtractor={item => item.id} />
+                <CustomInput
+                    placeHolderProp="Ingresar Tarea"
+                    textItemProp={textItem}
+                    onChangeTextHandlerEvent={onChangeTextHandler}
+                    addItemToListHandlerEvent={addItemToListHandler}
+                />
+                <CustomFlatList
+                    itemListProp={itemList}
+                    renderListItemEvent={renderListItem}
+                />
             </View>
             <CustomModal
                 animationTypeProp="slide"
@@ -67,16 +70,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#38D2AD",
         padding: 30
-    },
-    inputConteiner: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginTop: 240
-    },
-    textInput: {
-        width: 200,
-        borderBottomColor: "#ccc",
-        borderBottomWidth: 1,
     },
     itemList: {
         flexDirection: "row",
